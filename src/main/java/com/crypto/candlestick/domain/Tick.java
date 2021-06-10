@@ -24,8 +24,11 @@ public class Tick {
     private BigDecimal quantity;
 
     @JsonProperty(value = "s")
-    private Side  side;
+    private Side side;
 
     @JsonProperty(value = "t")
     private Long timestamp;
+
+    @JsonProperty(value = "i")
+    private String instrument;
 }
