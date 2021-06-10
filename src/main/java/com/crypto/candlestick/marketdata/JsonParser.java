@@ -3,10 +3,12 @@ package com.crypto.candlestick.marketdata;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.InputStream;
 
+@Component
 public class JsonParser {
 
     static ObjectMapper objectMapper = new ObjectMapper();

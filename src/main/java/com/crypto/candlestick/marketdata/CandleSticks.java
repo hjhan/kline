@@ -1,13 +1,18 @@
 package com.crypto.candlestick.marketdata;
 
 import com.crypto.candlestick.domain.CandleStick;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.InputStream;
 
+@Component
 public class CandleSticks {
 
-    public ResponseBase<CandleStick> parseTrades(InputStream inputStream) {
-        JsonParser jsonParser = new JsonParser();
+    @Autowired
+    private JsonParser jsonParser;
+
+    public ResponseBase<CandleStick> parse(InputStream inputStream) {
         return jsonParser.parseResponse(inputStream, CandleStick.class);
     }
 
