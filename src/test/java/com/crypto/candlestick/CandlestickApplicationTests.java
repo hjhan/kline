@@ -1,57 +1,66 @@
 package com.crypto.candlestick;
 
+import com.crypto.candlestick.domain.CandleStick;
 import com.crypto.candlestick.domain.Tick;
+import com.crypto.candlestick.marketdata.CandleSticks;
 import com.crypto.candlestick.marketdata.ResponseBase;
+import com.crypto.candlestick.marketdata.Trades;
 import com.crypto.candlestick.ta.KLine;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.io.*;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.io.InputStream;
 import java.util.List;
+import java.util.NavigableMap;
+
 
 @SpringBootTest
 class CandlestickApplicationTests {
 
-    static ObjectMapper objectMapper = new ObjectMapper();
+    @Autowired
+    private Trades trades;
 
-	public LocalDateTime tsToDatetime(long timestamp){
-		Instant instant = Instant.ofEpochMilli(timestamp);
-		ZoneId zone = ZoneId.systemDefault();
-		System.out.println(zone);
-		return LocalDateTime.ofInstant(instant, zone);
-	}
+    @Autowired
+    private CandleSticks candleSticks;
+
+    @Autowired
+    private KLine kLine;
 
     @BeforeAll
     static void setup() {
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
     }
 
     @Test
-    void kline_1m() throws IOException {
-        InputStream inputStream = this.getClass().getResourceAsStream("/trades/btc_usdt.json");
+    void kline_1m() {
 
-        //JsonNode jsonNode = objectMapper.readTree(fileInputStream);
-        JavaType tradeResponse = objectMapper.getTypeFactory().constructParametricType(ResponseBase.class, Tick.class);
-        ResponseBase<Tick> value = objectMapper.readValue(inputStream, tradeResponse);
+        List<CandleStick> candleSticks = klines().getResult().getData();
+        List<Tick> ticks = trades().getResult().getData();
+        NavigableMap<Long, CandleStick> kLinesFromTrades = kLine.groupTicks(ticks);
 
-        List<Tick> ticks = value.getResult().getData();
-
-        KLine kLine = new KLine();
-        kLine.groupTicks(ticks);
-
-        for (Tick tick : ticks) {
-			System.out.println(tick);
-			System.out.println(tsToDatetime(tick.getTimestamp()*1000*60));
+        for (CandleStick cs : candleSticks) {
+            if (kLinesFromTrades.containsKey(cs.getTimestamp())) {
+                CandleStick csToCompare = kLinesFromTrades.get(cs.getTimestamp());
+              /*Assertions.assertTrue(cs.getClose().compareTo(csToCompare.getClose()) == 0);
+              Assertions.assertTrue(cs.getOpen().compareTo(csToCompare.getOpen()) == 0);
+              Assertions.assertTrue(cs.getHigh().compareTo(csToCompare.getHigh()) == 0);
+              Assertions.assertTrue(cs.getLow().compareTo(csToCompare.getLow()) == 0);
+              Assertions.assertTrue(cs.getVolume().compareTo(csToCompare.getVolume()) == 0);*/
+                System.out.println(cs);
+                System.out.println(csToCompare);
+            }
         }
-
-
     }
 
+    private ResponseBase<Tick> trades() {
+        InputStream inputStream = this.getClass().getResourceAsStream("/trades/btc_usdt_6-10-1740.json");
+        return trades.parseTrades(inputStream);
+    }
+
+    private ResponseBase<CandleStick> klines() {
+        InputStream inputStream = this.getClass().getResourceAsStream("/candlestick/cs-6-10-1741.json");
+        return candleSticks.parse(inputStream);
+    }
 }
