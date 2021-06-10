@@ -9,15 +9,12 @@ import java.util.stream.Collectors;
 public class KLine {
 
     private Long roundToMin(Long ts){
-        return ts / 1000 / 60;
+        return (ts / 1000 / 60 + 1) * 1000 * 60;  //End time of candlestick (Unix timestamp)
     }
-
-
 
     public void groupTicks(List<Tick> ticks){
         // K timestamp of every interval(1m), ordered by ts
         NavigableMap<Long,List<Tick>> groupedTicks = new TreeMap<>();
-
 
         Map<Long, List<Tick>> collect = ticks.stream().map(mapToMin()).collect(Collectors.groupingBy(Tick::getTimestamp));
         System.out.println(collect);
