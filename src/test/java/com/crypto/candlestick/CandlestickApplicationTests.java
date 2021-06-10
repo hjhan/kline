@@ -7,7 +7,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 class CandlestickApplicationTests {
 
 	@Test
-	void contextLoads() {
+	void kline_1m() {
+
 	}
 
 }

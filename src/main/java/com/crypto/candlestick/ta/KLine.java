@@ -1,4 +1,8 @@
 package com.crypto.candlestick.ta;
 
-public class KLine {
+import java.io.Serializable;
+
+public class KLine implements Serializable {
+
+
 }
