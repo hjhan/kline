@@ -1,5 +1,6 @@
 package com.crypto.candlestick.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,11 +13,18 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CandleStick {
-    private  Long timestamp;
+
+    @JsonProperty(value = "t")
+    private Long timestamp;
+    @JsonProperty(value = "o")
     private BigDecimal open;
+    @JsonProperty(value = "c")
     private BigDecimal close;
+    @JsonProperty(value = "h")
     private BigDecimal high;
+    @JsonProperty(value = "l")
     private BigDecimal low;
+    @JsonProperty(value = "v")
     private BigDecimal volume;
 }
 
