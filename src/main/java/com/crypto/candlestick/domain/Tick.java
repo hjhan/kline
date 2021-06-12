@@ -34,7 +34,7 @@ public class Tick {
     @JsonProperty(value = "s")
     private Side side;
 
-    @Column(name = "TS")
+    @Column
     @JsonProperty(value = "t")
     private Long ts;
 
