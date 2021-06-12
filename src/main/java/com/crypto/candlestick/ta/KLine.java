@@ -24,7 +24,7 @@ public class KLine {
         // other intervals can be generated from 1m likewise
         NavigableMap<Long, CandleStick> groupedTicks = new TreeMap<>();
 
-        Map<Long, List<Tick>> ticksToReduce = ticks.stream().map(mapToMin()).collect(Collectors.groupingBy(Tick::getTimestamp));
+        Map<Long, List<Tick>> ticksToReduce = ticks.stream().map(mapToMin()).collect(Collectors.groupingBy(Tick::getTs));
         for (Map.Entry<Long, List<Tick>> e : ticksToReduce.entrySet()) {
             CandleStick candleStick = reduceToCandleStick(e.getValue());
             candleStick.setTimestamp(e.getKey());
@@ -65,7 +65,7 @@ public class KLine {
 
     private Function<Tick, Tick> mapToMin() {
         return tick -> {
-            tick.setTimestamp(roundToMin(tick.getTimestamp()));
+            tick.setTs(roundToMin(tick.getTs()));
             return tick;
         };
     }
