@@ -1,17 +1,16 @@
 package com.crypto.candlestick.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(exclude = "ticks")
 public class CandleStick {
 
     @JsonProperty(value = "t")
@@ -26,5 +25,8 @@ public class CandleStick {
     private BigDecimal low;
     @JsonProperty(value = "v")
     private BigDecimal volume;
+
+    //Underlying ticks which generated the candlestick
+    private List<Tick> ticks;
 }
 

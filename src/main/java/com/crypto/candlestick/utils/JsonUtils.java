@@ -1,5 +1,6 @@
-package com.crypto.candlestick.marketdata;
+package com.crypto.candlestick.utils;
 
+import com.crypto.candlestick.marketdata.ResponseBase;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,7 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 @Component
-public class JsonParser {
+public class JsonUtils {
 
     static ObjectMapper objectMapper = new ObjectMapper();
 
@@ -17,7 +18,7 @@ public class JsonParser {
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
-    public <T> ResponseBase<T> parseResponse(InputStream inputStream, Class<?> cls) {
+    public static <T> ResponseBase<T> parseResponse(InputStream inputStream, Class<?> cls) {
         JavaType responseType = objectMapper.getTypeFactory().constructParametricType(ResponseBase.class, cls);
         try {
             return objectMapper.readValue(inputStream, responseType);

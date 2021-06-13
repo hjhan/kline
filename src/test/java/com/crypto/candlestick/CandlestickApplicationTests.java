@@ -2,10 +2,9 @@ package com.crypto.candlestick;
 
 import com.crypto.candlestick.domain.CandleStick;
 import com.crypto.candlestick.domain.Tick;
-import com.crypto.candlestick.marketdata.CandleSticks;
 import com.crypto.candlestick.marketdata.ResponseBase;
-import com.crypto.candlestick.marketdata.Trades;
 import com.crypto.candlestick.ta.KLine;
+import com.crypto.candlestick.utils.JsonUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +19,6 @@ import java.util.NavigableMap;
 class CandlestickApplicationTests {
 
     @Autowired
-    private Trades trades;
-
-    @Autowired
-    private CandleSticks candleSticks;
-
-    @Autowired
     private KLine kLine;
 
     @BeforeAll
@@ -38,7 +31,7 @@ class CandlestickApplicationTests {
 
         List<CandleStick> candleSticks = klines().getResult().getData();
         List<Tick> ticks = trades().getResult().getData();
-        NavigableMap<Long, CandleStick> kLinesFromTrades = kLine.groupTicks(ticks);
+        NavigableMap<Long, CandleStick> kLinesFromTrades = kLine.generateKLine(ticks);
 
         for (CandleStick cs : candleSticks) {
             if (kLinesFromTrades.containsKey(cs.getTimestamp())) {
@@ -65,11 +58,11 @@ class CandlestickApplicationTests {
 
     private ResponseBase<Tick> trades() {
         InputStream inputStream = this.getClass().getResourceAsStream("/trades/btc_usdt_6-10-1740.json");
-        return trades.parseTrades(inputStream);
+        return JsonUtils.parseResponse(inputStream,Tick.class);
     }
 
     private ResponseBase<CandleStick> klines() {
         InputStream inputStream = this.getClass().getResourceAsStream("/candlestick/cs-6-10-1741.json");
-        return candleSticks.parse(inputStream);
+        return JsonUtils.parseResponse(inputStream,CandleStick.class);
     }
 }

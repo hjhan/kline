@@ -6,6 +6,9 @@ https://crypto.com/fe-ex-api/market-data/v2/public/get-candlestick?depth=1000&in
 
 https://crypto.com/fe-ex-api/market-data/v2/public/get-trades?depth=1000&instrument_name=BTC_USDT
 The trades are reversed ordered by ts
+Due to the get-trades url only return the latest 200 trades, so start a scheduled job to query the trades 
+every 10 seconds, parse the trades json to object and save to H2 embedded database
+
 # Use Jackson ObjectMapper map json to Domain Object
 
 # Use Trades List to generate KLine i.e 1m

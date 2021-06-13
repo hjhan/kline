@@ -7,7 +7,6 @@ import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 @Configuration
@@ -22,8 +21,8 @@ public class RestTemplateConfig {
     @Bean
     public ClientHttpRequestFactory simpleClientHttpRequestFactory() {
         SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
-        factory.setReadTimeout(5000);//单位为ms
-        factory.setConnectTimeout(5000);//单位为ms
+        factory.setReadTimeout(5000);//ms
+        factory.setConnectTimeout(5000);//ms
         return factory;
     }
 }

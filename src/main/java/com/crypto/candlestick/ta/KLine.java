@@ -16,10 +16,10 @@ import java.util.stream.Collectors;
 public class KLine {
 
     private Long roundToMin(Long ts) {
-        return (ts / 1000 / 60) * 1000 * 60;  //End time of candlestick (Unix timestamp)
+        return (ts / 1000 / 60 ) * 1000 * 60;  //End? time of candlestick (Unix timestamp)
     }
 
-    public NavigableMap<Long, CandleStick> groupTicks(List<Tick> ticks) {
+    public NavigableMap<Long, CandleStick> generateKLine(List<Tick> ticks) {
         // K timestamp of every interval(1m), ordered by ts
         // other intervals can be generated from 1m likewise
         NavigableMap<Long, CandleStick> groupedTicks = new TreeMap<>();
@@ -36,6 +36,7 @@ public class KLine {
     public CandleStick reduceToCandleStick(List<Tick> ticks) {
         int size = ticks.size();
         CandleStick candleStick = new CandleStick();
+        candleStick.setTicks(ticks);
         if (size > 0) {
             //ticks are trade revers ordered, so the first one would be close
             candleStick.setClose(ticks.get(0).getPrice());
