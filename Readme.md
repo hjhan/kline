@@ -1,7 +1,7 @@
 # Get CandleStick examples
 
 https://crypto.com/fe-ex-api/market-data/v2/public/get-candlestick?depth=1000&instrument_name=BTC_USDT&timeframe=1m
-
+this url return 600, so 600 minutes range of trades, 10 hours
 # Get Trades examples
 
 https://crypto.com/fe-ex-api/market-data/v2/public/get-trades?depth=1000&instrument_name=BTC_USDT

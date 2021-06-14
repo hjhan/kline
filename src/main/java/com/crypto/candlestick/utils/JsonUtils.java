@@ -1,6 +1,7 @@
 package com.crypto.candlestick.utils;
 
 import com.crypto.candlestick.marketdata.ResponseBase;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,5 +28,22 @@ public class JsonUtils {
         }
     }
 
+    public static <T> T strToObject(String content, Class<T> valueType) {
+        try {
+            return objectMapper.readValue(content, valueType);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
+    public static String objectToJsonStr(Object object) {
+        String jsonString;
+        try {
+            jsonString = objectMapper.writeValueAsString(object);
+        }
+        catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        return jsonString;
+    }
 }
