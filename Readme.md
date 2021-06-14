@@ -1,5 +1,5 @@
 # Overall Design 
-![Design Diagram](KLineReconFlow.jpg)
+ ![Design Diagram](imgs/KLineReconFlow.jpg)
 
 
 # How to Run
@@ -13,8 +13,8 @@
    @Scheduled(initialDelay = 1000*60*20, fixedRate = 1000 * 60 * 60 * 8)
    public void saveKlinesToFile()
    ```
-   * saveTradesToFile will accumulate the trades and parse to Java and then save the json into tradesJsons.txt
-   * saveKlinesToFilea with initial delay 20 seconds, to query the candlestick and save both them to files
+   * **saveTradesToFile** will accumulate the trades and parse to Java and then save the json into tradesJsons.txt
+   * **saveKlinesToFilea** with initial delay 20 seconds, to query the candlestick and save both them to files
    
 # How to Reconcile
 ```java
@@ -43,12 +43,13 @@
         }
     }
 ```
-
 1. Run the com.crypto.candlestick.core.KLineReconTest under test/java directory which would Assert the OCHL
-and log the benchmark candlestick and generated candlestick,its underlying trades
+and log the benchmark candlestick and generated candlestick,its underlying trades as json
 
 2. Sample output
-   * Sample output are under test/java/com.crypto.candlestick.core.
+   * Sample output are under data/ouput directory
+   * Reconcilation Result Json is useful to verify the consistency visually as show below   
+     ![Reconcilation Sample Ouput](imgs/ReconcilationOutput-Prettify.png)
 # Get CandleStick examples
 
 https://crypto.com/fe-ex-api/market-data/v2/public/get-candlestick?depth=1000&instrument_name=BTC_USDT&timeframe=1m
@@ -83,8 +84,7 @@ every 10 seconds, parse the trades json to object and save to file tradesJsons.t
         }
 ```
 # Use Jackson ObjectMapper map json to Domain Object
-```java
-
+```java  
     public static <T> ResponseBase<T> parseResponse(InputStream inputStream, Class<?> cls) {
         JavaType responseType = objectMapper.getTypeFactory().constructParametricType(ResponseBase.class, cls);
         try {
@@ -110,6 +110,9 @@ every 10 seconds, parse the trades json to object and save to file tradesJsons.t
 2. group the tick into map
 3. reduce the map to kline
 ```java
+private Long roundToMin(Long ts) {
+        return (ts / 1000 / 60 ) * 1000 * 60;  //End? time of candlestick (Unix timestamp)
+        }
 public NavigableMap<Long, CandleStick> generateKLine(List<Tick> ticks) {
         // Round timestamp to nearest of every interval(1m), ordered by ts
         // other intervals can be generated from 1m likewise
@@ -123,7 +126,7 @@ public NavigableMap<Long, CandleStick> generateKLine(List<Tick> ticks) {
         }
         return groupedTicks;
     }
-
 ```
 
-# Alternative try use Flink to process the data in realtime
+# Flink
+* Alternative try use Flink to process the data in realtime

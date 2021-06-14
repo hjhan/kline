@@ -2,6 +2,7 @@ package com.crypto.candlestick.core;
 
 import com.crypto.candlestick.domain.CandleStick;
 import com.crypto.candlestick.utils.DateUtils;
+import com.crypto.candlestick.utils.JsonUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -21,7 +22,10 @@ class KLineReconTest {
 
     @Test
     void recon() {
-        ReconResult reconResult = kLineRecon.recon("data/input/kline.json","data/input/tradesJsons.txt");
+        ReconResult reconResult = kLineRecon.recon("data/input/kline-202106141730.json","data/input/tradesJsons-202106141730.txt");
+
+        String resultJson = JsonUtils.objectToJsonStr(reconResult);
+        System.out.println(resultJson);
         List<Pair<CandleStick, CandleStick>> data = reconResult.getData();
         int size = data.size();
         LOG.info("Total size" + size);
