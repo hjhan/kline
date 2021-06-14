@@ -61,7 +61,7 @@ public class Crawler {
 
     @Scheduled(fixedRate = 1000 * 10) //every 10seconds
     public void saveTradesToFile() {
-        LOG.info("==定时任务开始==");
+        LOG.info("========定时任务开始========");
         List<Tick> ticks = getTrades(BTC_USDT);
         for(int i = ticks.size()-1; i >= 0; i--){
             Tick t = ticks.get(i);
@@ -104,7 +104,6 @@ public class Crawler {
 
     @PostConstruct
     private void init(){
-        LOG.info("***********************************");
         try {
             tradeWriter = new FileWriter("tradesJsons.txt", false);
             kLineWriter = new FileWriter("kline.json",false);
