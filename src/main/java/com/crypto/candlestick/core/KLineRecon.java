@@ -25,12 +25,12 @@ public class KLineRecon {
     @Autowired
     private KLine kLine;
 
-    public ReconResult recon() {
+    public ReconResult recon(String klineFile,String tradesFile) {
         //1. get CandleStick from File
-        List<CandleStick> crawledKlines = getCandleSticksFromFile("kline.json");
+        List<CandleStick> crawledKlines = getCandleSticksFromFile(klineFile);
 
         //2. Get Trades from file and generate CandleSticks to be compared
-        List<Tick> tickList = getTickListFromFile("tradesJsons.txt");
+        List<Tick> tickList = getTickListFromFile(tradesFile);
         NavigableMap<Long, CandleStick> generatedKlines = kLine.generateKLine(tickList);
 
         ReconResult reconResult = new ReconResult();

@@ -21,7 +21,7 @@ class KLineReconTest {
 
     @Test
     void recon() {
-        ReconResult reconResult = kLineRecon.recon();
+        ReconResult reconResult = kLineRecon.recon("data/input/kline.json","data/input/tradesJsons.txt");
         List<Pair<CandleStick, CandleStick>> data = reconResult.getData();
         int size = data.size();
         LOG.info("Total size" + size);
