@@ -25,7 +25,6 @@ public class FileUtils {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     public static List<Tick> getTickListFromFile(String fileName) {

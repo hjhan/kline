@@ -17,7 +17,7 @@ public class KLine {
     }
 
     public NavigableMap<Long, CandleStick> generateKLine(List<Tick> ticks) {
-        // K timestamp of every interval(1m), ordered by ts
+        // Round timestamp to nearest of every interval(1m), ordered by ts
         // other intervals can be generated from 1m likewise
         NavigableMap<Long, CandleStick> groupedTicks = new TreeMap<>();
 
