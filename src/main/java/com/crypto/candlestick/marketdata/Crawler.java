@@ -55,12 +55,12 @@ public class Crawler {
 
     //Inital delay to wait the trades to accumulate 20minutes, every 8hour,only need once
     @Scheduled(initialDelay = 1000*60*20, fixedRate = 1000 * 60 * 60 * 8)
-    public void saveKlinesToDB() {
+    public void saveKlinesToFile() {
         saveKlineToFile();
     }
 
     @Scheduled(fixedRate = 1000 * 10) //every 10seconds
-    public void saveTradesToDB() {
+    public void saveTradesToFile() {
         LOG.info("==定时任务开始==");
         List<Tick> ticks = getTrades(BTC_USDT);
         for(int i = ticks.size()-1; i >= 0; i--){

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -56,15 +57,11 @@ public class KLineRecon {
         return reconResult;
     }
 
-    /*private List<Tick> getTickListFromDB() {
-        Sort sort = Sort.by(Sort.Direction.DESC, "ts", "id");
-        return tradeRepository.findAll(sort);
-    }*/
-
     private List<CandleStick> getCandleSticksFromFile(){
         try {
-            ResponseBase<CandleStick> objectResponseBase = JsonUtils.parseResponse(new ByteArrayInputStream(Files.readAllBytes(Paths.get("kline.json"))), CandleStick.class);
-            return objectResponseBase.getResult().getData();
+            InputStream inputStream = new ByteArrayInputStream(Files.readAllBytes(Paths.get("kline.json")));
+            ResponseBase<CandleStick> response = JsonUtils.parseResponse(inputStream, CandleStick.class);
+            return response.getResult().getData();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
