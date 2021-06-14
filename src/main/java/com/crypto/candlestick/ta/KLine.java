@@ -5,10 +5,7 @@ import com.crypto.candlestick.domain.Tick;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
-import java.util.NavigableMap;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -58,7 +55,8 @@ public class KLine {
             candleStick.setLow(low);
             candleStick.setVolume(vol);
 
-        } else { // if no trades use BigDecimal.ZERO as vol to indicate
+        } else {
+            // if no trades use BigDecimal.ZERO as vol to indicate and price set to previous close
             candleStick.setVolume(BigDecimal.ZERO);
         }
         return candleStick;
@@ -69,6 +67,51 @@ public class KLine {
             tick.setTs(roundToMin(tick.getTs()));
             return tick;
         };
+    }
+
+    public NavigableMap<Long, CandleStick> generateKLineFrom1m(List<CandleStick> candleSticks,Interval interval) {
+        NavigableMap<Long, CandleStick> result = new TreeMap<>();
+        for (CandleStick cs: candleSticks) {
+            cs.setTimestamp(cs.getTimestamp() / interval.getNMinutes() * interval.getNMinutes());
+        }
+        Map<Long, List<CandleStick>> groupedCandleSticks = candleSticks.stream().collect(Collectors.groupingBy(CandleStick::getTimestamp));
+        for (Map.Entry<Long, List<CandleStick>> e: groupedCandleSticks.entrySet() ) {
+            CandleStick candleStick = reduce(e.getValue());
+            candleStick.setTimestamp(e.getKey());
+            result.put(e.getKey(),candleStick);
+        }
+        return result;
+    }
+
+    private CandleStick reduce(List<CandleStick> candleSticks) {
+        int size = candleSticks.size();
+        //candleSticks ascending order
+        CandleStick candleStick = new CandleStick();
+        if (size > 0) {
+            candleStick.setOpen(candleSticks.get(0).getOpen());
+            candleStick.setClose(candleSticks.get(size-1).getClose());
+
+            BigDecimal high = candleSticks.get(0).getHigh();
+            BigDecimal low = candleSticks.get(0).getLow();
+            BigDecimal vol = candleSticks.get(0).getVolume();
+            for (int i = 1; i < size; i++) {
+                BigDecimal h = candleSticks.get(i).getHigh();
+                BigDecimal l = candleSticks.get(i).getLow();
+                if (h.compareTo(high) > 0) {
+                    high = h;
+                }
+                if (l.compareTo(low) < 0) {
+                    low = l;
+                }
+                vol = vol.add(candleSticks.get(i).getVolume());
+            }
+            candleStick.setHigh(high);
+            candleStick.setLow(low);
+            candleStick.setVolume(vol);
+        }else{
+            candleStick.setVolume(BigDecimal.ZERO);
+        }
+        return candleStick;
     }
 
 }

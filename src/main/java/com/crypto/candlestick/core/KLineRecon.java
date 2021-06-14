@@ -2,28 +2,21 @@ package com.crypto.candlestick.core;
 
 import com.crypto.candlestick.domain.CandleStick;
 import com.crypto.candlestick.domain.Tick;
-import com.crypto.candlestick.marketdata.ResponseBase;
 import com.crypto.candlestick.ta.Interval;
 import com.crypto.candlestick.ta.KLine;
 import com.crypto.candlestick.utils.Const;
-import com.crypto.candlestick.utils.JsonUtils;
-import org.apache.commons.io.input.ReversedLinesFileReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NavigableMap;
+
+import static com.crypto.candlestick.utils.FileUtils.getCandleSticksFromFile;
+import static com.crypto.candlestick.utils.FileUtils.getTickListFromFile;
 
 @Component
 public class KLineRecon {
@@ -34,12 +27,11 @@ public class KLineRecon {
 
     public ReconResult recon() {
         //1. get CandleStick from File
-        List<CandleStick> crawledKlines = getCandleSticksFromFile();
+        List<CandleStick> crawledKlines = getCandleSticksFromFile("kline.json");
 
         //2. Get Trades from file and generate CandleSticks to be compared
-        List<Tick> tickList = getTickListFromFile();
+        List<Tick> tickList = getTickListFromFile("tradesJsons.txt");
         NavigableMap<Long, CandleStick> generatedKlines = kLine.generateKLine(tickList);
-
 
         ReconResult reconResult = new ReconResult();
         reconResult.setInterval(Interval.ONE_MIN);
@@ -57,29 +49,4 @@ public class KLineRecon {
         return reconResult;
     }
 
-    private List<CandleStick> getCandleSticksFromFile(){
-        try {
-            InputStream inputStream = new ByteArrayInputStream(Files.readAllBytes(Paths.get("kline.json")));
-            ResponseBase<CandleStick> response = JsonUtils.parseResponse(inputStream, CandleStick.class);
-            return response.getResult().getData();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-    }
-
-    private List<Tick> getTickListFromFile() {
-        Path path = Paths.get("tradesJsons.txt");
-        List<Tick> tickList = new ArrayList<>();
-        try (ReversedLinesFileReader reader = new ReversedLinesFileReader(path.toFile(), StandardCharsets.UTF_8)) {
-            String line = reader.readLine();
-            while(line != null){
-                tickList.add(JsonUtils.strToObject(line, Tick.class));
-                line = reader.readLine();
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return tickList;
-    }
 }

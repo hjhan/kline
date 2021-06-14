@@ -1,3 +1,7 @@
+# Overall Design 
+![Design Diagram](KLineReconFlow.jpg)
+
+
 #How to Run
 1. Start the main com.crypto.candlestick.CandlestickApplication 
    which will start two scheduled job in com.crypto.candlestick.marketdata.Crawler,
@@ -15,6 +19,8 @@
 #How to Reconcile
 1. Run the com.crypto.candlestick.core.KLineReconTest under test/java directory which would Assert the OCHL
 and log the benchmark candlestick and generated candlestick,its underlying trades
+2. Sample output
+   * Sample output are under test/java/com.crypto.candlestick.core.
 # Get CandleStick examples
 
 https://crypto.com/fe-ex-api/market-data/v2/public/get-candlestick?depth=1000&instrument_name=BTC_USDT&timeframe=1m
