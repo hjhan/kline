@@ -14,8 +14,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.util.Pair;
 
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 class KLineTest {
 
@@ -26,12 +24,10 @@ class KLineTest {
 
     @Test
     void generateKLineFrom1m() {
-
         String kLine1m = "data/input/kline-1m-202106142015.json";
         String kLine5m = "data/input/kline-5m-202106142015.json";
         ReconResult reconResult = kLineRecon.reconKline(kLine1m, kLine5m, Interval.FIVE_MIN);
-        System.out.println(JsonUtils.objectToJsonStr(reconResult));
-
+        System.out.println(JsonUtils.objectToJsonStr(reconResult));//dump result to json
         List<Pair<CandleStick, CandleStick>> data = reconResult.getData();
         int size = data.size();
         LOG.info("Total size" + size);
@@ -55,6 +51,5 @@ class KLineTest {
                 Assertions.assertTrue(first.getLow().compareTo(second.getLow())==0,"Low not match");
             }
         }
-
     }
 }
