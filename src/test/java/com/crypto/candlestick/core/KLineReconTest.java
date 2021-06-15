@@ -25,7 +25,7 @@ class KLineReconTest {
         ReconResult reconResult = kLineRecon.recon("data/input/kline-202106141730.json","data/input/tradesJsons-202106141730.txt");
 
         String resultJson = JsonUtils.objectToJsonStr(reconResult);
-        System.out.println(resultJson);
+        System.out.println(resultJson);//dump the reconciliation result as json to visualize the consistency
         List<Pair<CandleStick, CandleStick>> data = reconResult.getData();
         int size = data.size();
         LOG.info("Total size" + size);
