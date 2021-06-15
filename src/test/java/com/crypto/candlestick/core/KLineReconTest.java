@@ -31,6 +31,10 @@ class KLineReconTest {
         LOG.info("Total size" + size);
         //Exclude the first and last one, as insufficient trades, only compare the ones in middle
         if(size > 2){
+            //The First one's close must match
+            Assertions.assertTrue(data.get(0).getFirst().getClose().compareTo(data.get(0).getSecond().getClose())==0,"Close not match");
+            //The Last one's open must match
+            Assertions.assertTrue(data.get(size-1).getFirst().getOpen().compareTo(data.get(size-1).getSecond().getOpen())==0,"Close not match");
             for(int i = 1; i < (size -1); i++ ){
                 Pair<CandleStick, CandleStick> pair = data.get(i);
                 CandleStick first = pair.getFirst();

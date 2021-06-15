@@ -72,7 +72,8 @@ public class KLine {
     public NavigableMap<Long, CandleStick> generateKLineFrom1m(List<CandleStick> candleSticks,Interval interval) {
         NavigableMap<Long, CandleStick> result = new TreeMap<>();
         for (CandleStick cs: candleSticks) {
-            cs.setTimestamp(cs.getTimestamp() / interval.getNMinutes() * interval.getNMinutes());
+            long divisor = 1000*60*interval.getNMinutes();
+            cs.setTimestamp(cs.getTimestamp() / divisor  * divisor);
         }
         Map<Long, List<CandleStick>> groupedCandleSticks = candleSticks.stream().collect(Collectors.groupingBy(CandleStick::getTimestamp));
         for (Map.Entry<Long, List<CandleStick>> e: groupedCandleSticks.entrySet() ) {

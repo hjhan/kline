@@ -49,4 +49,29 @@ public class KLineRecon {
         return reconResult;
     }
 
+
+    public ReconResult reconKline(String kLine1m,String kLine5m,Interval interval) {
+
+        //1. get CandleStick from File
+        List<CandleStick> klinesList = getCandleSticksFromFile(kLine1m);
+
+        //2.Generate CandleSticks to be compared
+        NavigableMap<Long, CandleStick> kLineFrom1m = kLine.generateKLineFrom1m(klinesList, interval);
+
+        //3.
+        List<CandleStick> crawledKlines = getCandleSticksFromFile(kLine5m);
+
+        ReconResult reconResult = new ReconResult();
+        reconResult.setInterval(interval);
+        reconResult.setInstrumentName(Const.BTC_USDT);
+
+        List<Pair<CandleStick, CandleStick>> data = new ArrayList<>();
+        reconResult.setData(data);
+        for (CandleStick cs : crawledKlines) {
+            if(kLineFrom1m.containsKey(cs.getTimestamp())){
+                data.add(Pair.of(cs,kLineFrom1m.get(cs.getTimestamp())));
+            }
+        }
+        return reconResult;
+    }
 }
